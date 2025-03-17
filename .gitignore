@@ -2,4 +2,7 @@
 *.png
 _*
 *.jar
+*.zip
+*.exe
+launch4j.log
 unused/
