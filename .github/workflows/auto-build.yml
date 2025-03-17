@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          show-progress: false
+          show-progress: true
       - name: Build Application
         run: |
           javac *.java
@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          show-progress: false
+          show-progress: true
       - name: Build Application
         run: |
           javac *.java
@@ -57,7 +57,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          show-progress: false
+          show-progress: true
       - name: Build Application
         run: |
           javac *.java
@@ -84,7 +84,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          show-progress: false
+          show-progress: true
       - name: Install github-release
         run: |
           go install github.com/github-release/github-release@latest
@@ -110,11 +110,13 @@ jobs:
               --tag continuous \
               --name "Continuous Build" \
               --description "$DESCRIPTION" \
+              --prerelease
           else
             github-release edit \
               --tag continuous \
               --name "Continuous Build" \
               --description "$DESCRIPTION" \
+              --prerelease
           fi
       - name: Download Artifacts
         uses: actions/download-artifact@v4
