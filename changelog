@@ -1,4 +1,9 @@
 
+Version 0.0.2a 
+	* Fixed: Mirrored circle being off when the sprite is dragged off-center.
+	* Added: Draw centerline when in mirror mode.
+	* Test using launch4j to build executable for Windows.
+
 Version 0.0.1a : Initial Alpha Release
 	* Initial Alpha Release
 	* Functional(?) hardpoint locator for ES ships.
