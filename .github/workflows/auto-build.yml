@@ -13,7 +13,7 @@ jobs:
     name: Linux
     runs-on: ubuntu-22.04
     env:
-      OUTPUT: es_shipyard.jar
+      OUTPUT: es_shipyard_linux.jar
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
       - name: Build Application
         run: |
           javac *.java
-          jar -cfe es_shipyard.jar Shipyard *.class
+          jar -cfe es_shipyard_linux.jar Shipyard *.class
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -46,7 +46,7 @@ jobs:
     name: Windows
     runs-on: windows-2025
     env:
-      OUTPUT: es_shipyard.jar
+      OUTPUT: es_shipyard_windows.jar
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -64,7 +64,7 @@ jobs:
       - name: Build Application
         run: |
           javac *.java
-          jar -cfe es_shipyard.jar Shipyard *.class
+          jar -cfe es_shipyard_windows.jar Shipyard *.class
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -75,7 +75,7 @@ jobs:
     name: MacOS
     runs-on: macos-13
     env:
-      OUTPUT: es_shipyard.jar
+      OUTPUT: es_shipyard_macos.jar
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -93,7 +93,7 @@ jobs:
       - name: Build Application
         run: |
           javac *.java
-          jar -cfe es_shipyard.jar Shipyard *.class
+          jar -cfe es_shipyard_macos.jar Shipyard *.class
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -110,9 +110,9 @@ jobs:
       - cd_macos_x64
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      OUTPUT_APPIMAGE: Endless_Sky_Shipyard-continuous-x86_64.AppImage
-      OUTPUT_WINDOWS: EndlessSkyShipyard-win64-continuous.zip
-      OUTPUT_MACOS: EndlessSkyShipyard-macOS-continuous.zip
+      OUTPUT_APPIMAGE: es_shipyard_linux.jar
+      OUTPUT_WINDOWS: es_shipyard_windows.jar
+      OUTPUT_MACOS: es_shipyard_macos.jar
     steps:
       - uses: actions/checkout@v4
         with:
@@ -134,7 +134,7 @@ jobs:
         run: |
           DESCRIPTION="Triggered on $(date -u '+%Y/%m/%d, %H:%M') UTC by commit ${{ github.sha }} (@${{ github.actor }})
 
-          This is an automated build of the latest source. It may be unstable, crash, or corrupt your ships. Use with caution!
+          This is an automated build of the latest source. It has not been tested and may cause problems. Use with caution!
 
           https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           if ! github-release info -t continuous > /dev/null 2>&1; then
@@ -153,7 +153,7 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
-          path: ${{ github.workspace }} # This will download all files to e.g `./EndlessSky-win64.zip/EndlessSky-win64.zip`
+          path: ${{ github.workspace }}
       - name: Add ${{ env.OUTPUT_APPIMAGE }} to release tag
         continue-on-error: true
         run: |
