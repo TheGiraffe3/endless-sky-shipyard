@@ -52,7 +52,7 @@ jobs:
     name: Windows Executable
     runs-on: windows-2025
     env:
-      OUTPUT: es_shipyard_windows_executable.zip
+      OUTPUT: es_shipyard_windows_executable.exe
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
