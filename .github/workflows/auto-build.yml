@@ -101,7 +101,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       OUTPUT_APPIMAGE: es_shipyard_linux.jar
       OUTPUT_WINDOWS: es_shipyard_windows.jar
-      OUTPUT_WINDOWS_EXECUTABLE: es_shipyard_windows_executable.exe
+      OUTPUT_WINDOWS_EXE: es_shipyard_windows_executable.exe
       OUTPUT_MACOS: es_shipyard_macos.jar
     steps:
       - uses: actions/checkout@v4
@@ -160,6 +160,14 @@ jobs:
             --replace \
             --name ${{ env.OUTPUT_WINDOWS }} \
             --file ${{ env.OUTPUT_WINDOWS }}/${{ env.OUTPUT_WINDOWS }}
+      - name: Add ${{ env.OUTPUT_WINDOWS_EXE }} to release tag
+        continue-on-error: true
+        run: |
+          github-release upload \
+            --tag continuous \
+            --replace \
+            --name ${{ env.OUTPUT_WINDOWS_EXE }} \
+            --file ${{ env.OUTPUT_WINDOWS_EXE }}/${{ env.OUTPUT_WINDOWS_EXE }}
       - name: Add ${{ env.OUTPUT_MACOS }} to release tag
         run: |
           github-release upload \
