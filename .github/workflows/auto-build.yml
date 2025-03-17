@@ -28,8 +28,8 @@ jobs:
           name: ${{ env.OUTPUT }}
           path: ${{ env.OUTPUT }}
 
-  cd_windows_x64:
-    name: Windows
+  cd_windows_x64_java:
+    name: Windows Jar
     runs-on: windows-2025
     env:
       OUTPUT: es_shipyard_windows.jar
@@ -42,6 +42,26 @@ jobs:
         run: |
           javac *.java
           jar -cfe es_shipyard_windows.jar Shipyard *.class
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.OUTPUT }}
+          path: ${{ env.OUTPUT }}
+
+  cd_windows_x64_exe:
+    name: Windows Executable
+    runs-on: windows-2025
+    env:
+      OUTPUT: es_shipyard_windows_executable.zip
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          show-progress: true
+      - name: Package Application
+        run: |
+          javac *.java
+          jar -cfe es_shipyard_windows_executable.exe Shipyard *.class
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -74,12 +94,14 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - cd_appimage_x64
-      - cd_windows_x64
+      - cd_windows_x64_java
+      - cd_windows_x64_exe
       - cd_macos_x64
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       OUTPUT_APPIMAGE: es_shipyard_linux.jar
       OUTPUT_WINDOWS: es_shipyard_windows.jar
+      OUTPUT_WINDOWS_EXECUTABLE: es_shipyard_windows_executable.exe
       OUTPUT_MACOS: es_shipyard_macos.jar
     steps:
       - uses: actions/checkout@v4
