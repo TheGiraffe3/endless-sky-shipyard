@@ -326,8 +326,14 @@ public class Board extends JPanel implements ActionListener {
 
 	protected int recent_button;
 	protected double prev_x, prev_y;
+	protected Point menu_beginclick;
+
+	public double lengthPoints(Point a, Point b) {
+		return Math.sqrt((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
+	}
 
 	class MouseButtonListener extends MouseAdapter {
+		public static final double max_dist_menu = 30.;
 		/*
 		 * 1 = left
 		 * 2 = middle
@@ -338,13 +344,6 @@ public class Board extends JPanel implements ActionListener {
 		@Override
 		public void mouseClicked(MouseEvent event) {
 			// System.out.println("Click:" + event.getButton() + " : " + event.getPoint());
-			// recent_button = event.getButton();
-			// drawCircle(g, ALLBITS, ABORT);
-			//todo: Maybe this should be under mousePressed instead so it's easier to access?
-			if (event.getButton() == MouseEvent.BUTTON3) {
-				HardpointMenu menu = new HardpointMenu();
-				menu.show(event.getComponent(), event.getX(), event.getY());
-			}
 		}
 
 		@Override
@@ -363,16 +362,23 @@ public class Board extends JPanel implements ActionListener {
 				}
 				update_info = true;
 			}
-			if (event.getButton() == MouseEvent.BUTTON2) {
+			else if (event.getButton() == MouseEvent.BUTTON2) {
 				// curr_ship.setImgX();
 				prev_x = event.getX();
 				prev_y = event.getY();
+			}
+			else if (event.getButton() == MouseEvent.BUTTON3) {
+				menu_beginclick = event.getPoint();
 			}
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent event) {
 			// System.out.println("Released:" + event.getButton() + ":" + event.getPoint());
+			if (event.getButton() == MouseEvent.BUTTON3 && lengthPoints(menu_beginclick, event.getPoint()) < max_dist_menu) {
+				HardpointMenu menu = new HardpointMenu();
+				menu.show(event.getComponent(), event.getX(), event.getY());
+			}
 			recent_button = 0;
 			prev_x = 0;
 			prev_y = 0;
