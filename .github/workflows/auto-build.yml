@@ -13,7 +13,7 @@ jobs:
     name: Linux
     runs-on: ubuntu-22.04
     env:
-      OUTPUT: Endless_Sky_Shipyard-continuous-x86_64.AppImage
+      OUTPUT: es_shipyard.jar
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -46,7 +46,7 @@ jobs:
     name: Windows
     runs-on: windows-2025
     env:
-      OUTPUT: EndlessSkyShipyard-win64-continuous.zip
+      OUTPUT: es_shipyard.jar
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -75,7 +75,7 @@ jobs:
     name: MacOS
     runs-on: macos-13
     env:
-      OUTPUT: EndlessSkyShipyard-macOS-continuous.zip
+      OUTPUT: es_shipyard.jar
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
