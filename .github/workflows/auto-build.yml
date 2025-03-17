@@ -66,7 +66,7 @@ jobs:
       - name: Build Application
         run: |
           javac *.java
-          jar -cfe es_shipyard_windows.jar Shipyard *.class -Xlint:unchecked
+          jar -cfe es_shipyard_windows.jar Shipyard *.class
           jpackage --input . --main-jar es_shipyard_windows.jar
       - name: Upload artifact
         uses: actions/upload-artifact@v4
