@@ -443,7 +443,6 @@ public class ControlPanel extends JPanel implements ItemListener{
 			//min arc/max arc
 			//under toggle
 			//turret turn mult num-entry
-			//TODO: draw arc visualization.
 			arcVisCanvas.setMaximumSize(new Dimension(200, 200));
 			arcVisCanvas.setAlignmentX(Component.LEFT_ALIGNMENT);
 			arcVisCanvas.setBackground(Shipyard.backgroundColor);

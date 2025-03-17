@@ -72,7 +72,6 @@ public class Board extends JPanel implements ActionListener {
 		this_frame = new_frame;
 		filename = file_to_open;
 		initBoard();
-		//TODO: Handle when image loading failed, create popup JDialog window or something.
 	}
 
 	private void initBoard() {
@@ -343,7 +342,6 @@ public class Board extends JPanel implements ActionListener {
 			// drawCircle(g, ALLBITS, ABORT);
 			//todo: Maybe this should be under mousePressed instead so it's easier to access?
 			if (event.getButton() == MouseEvent.BUTTON3) {
-				//todo show menu to select hardpoint type
 				HardpointMenu menu = new HardpointMenu();
 				menu.show(event.getComponent(), event.getX(), event.getY());
 			}
