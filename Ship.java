@@ -39,6 +39,8 @@ public class Ship {
 	private Exception exception;
 	private Vector<Hardpoint> hardpoints = new Vector<Hardpoint>();
 
+	int scaler_pick = Image.SCALE_DEFAULT;
+
 	public static int frame_margin = 50;
 
 	public Ship(String filename, JFrame frame) throws IOException,NullPointerException {
@@ -81,6 +83,9 @@ public class Ship {
 
 		w = img.getWidth(null);
 		h = img.getHeight(null);
+		if (w * h > 100000) {
+			scaler_pick = Image.SCALE_FAST;
+		}
 	}
 
 	/*
@@ -89,7 +94,7 @@ public class Ship {
 	 */
 	public boolean scaleImg() {
 		if (prev_img_scale != img_scale && orig_scaled_img != null) {
-			img = orig_scaled_img.getScaledInstance((int)(bimg.getWidth() * 2 * img_scale), (int)(bimg.getHeight() * 2 * img_scale), Image.SCALE_DEFAULT);
+			img = orig_scaled_img.getScaledInstance((int)(bimg.getWidth() * 2 * img_scale), (int)(bimg.getHeight() * 2 * img_scale), scaler_pick);
 			img_pos_x *= img_scale;
 			img_pos_y *= img_scale;
 			prev_img_scale = img_scale;
