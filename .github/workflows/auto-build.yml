@@ -9,7 +9,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-
   # .jar file
   build_jar_file:
     name: Build Jar File
@@ -31,8 +30,29 @@ jobs:
           name: ${{ env.OUTPUT }}
           path: ${{ env.OUTPUT }}
 
-
   # Application-specific files
+  build_exe_file:
+    name: Build Executable
+    runs-on: windows-2025
+    env:
+      OUTPUT: es_shipyard_windows.exe
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          show-progress: true
+      - name: Build Application
+        run: |
+          javac *.java
+          jar -cfe es_shipyard_windows.jar Shipyard *.class
+          jpackage --input . --main-jar es_shipyard_windows.jar
+          native-image -jar es_shipyard_windows.jar
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.OUTPUT }}
+          path: ${{ env.OUTPUT }}
+
   # cd_appimage_x64:
   #   name: Linux
   #   runs-on: ubuntu-22.04
@@ -53,27 +73,6 @@ jobs:
   #         name: ${{ env.OUTPUT }}
   #         path: ${{ env.OUTPUT }}
 
-  build_exe_file:
-    name: Build Executable
-    runs-on: windows-2025
-    env:
-      OUTPUT: es_shipyard_windows.exe
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          show-progress: true
-      - name: Build Application
-        run: |
-          javac *.java
-          jar -cfe es_shipyard_windows.jar Shipyard *.class
-          jpackage --input . --main-jar es_shipyard_windows.jar
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.OUTPUT }}
-          path: ${{ env.OUTPUT }}
-
   # cd_macos_x64:
   #   name: MacOS
   #   runs-on: macos-13
@@ -93,7 +92,6 @@ jobs:
   #       with:
   #         name: ${{ env.OUTPUT }}
   #         path: ${{ env.OUTPUT }}
-
 
   cd_upload_artifacts_to_release:
     name: Upload
