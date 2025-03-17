@@ -1,0 +1,12 @@
+
+better angle finder?
+outline
+warn problematic outline?
+warn odd size
+pick angles and arc with mouse
+hotkey to Add _Gun _Turret _Engine _RevEngine _Steering _Bay
+remember last picked directory
+remove dependency on having a ship on startup.
+Selectable hardpoints for:
+	hardpoint preview
+	hardpoint editing

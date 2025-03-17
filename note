@@ -1,0 +1,5 @@
+
+javac *.java
+jar -cfe test.jar Shipyard *.class
+#e to set 3rd param to class name without using manifest file.
+java -jar test.jar
