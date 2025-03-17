@@ -1,4 +1,4 @@
-name: Build Application (Jar Version)
+name: Build Application
 
 on:
   pull_request:
@@ -54,7 +54,7 @@ jobs:
   #         path: ${{ env.OUTPUT }}
 
   build_exe_file:
-    name: Windows Jar
+    name: Build Executable
     runs-on: windows-2025
     env:
       OUTPUT: es_shipyard_windows.exe
@@ -66,7 +66,8 @@ jobs:
       - name: Build Application
         run: |
           javac *.java
-          jar -cfe es_shipyard_windows.exe Shipyard *.class
+          jar -cfe es_shipyard_windows.jar Shipyard *.class
+          jpackage --input . --main-jar es_shipyard_windows.jar
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
