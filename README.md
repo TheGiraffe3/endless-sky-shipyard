@@ -2,6 +2,8 @@
 
 Coordinate finder and ship builder for Endless Sky. To be the complete ship maker for ES covering all from stats, outfitting, to positioning hardpoints.
 
+![image](https://github.com/user-attachments/assets/51fd8d99-d7b7-45a6-abfc-d7f952c52dd0)
+
 ## Requirement
 
 Java 21.0.2 (What I used, may or may not work with older version)
