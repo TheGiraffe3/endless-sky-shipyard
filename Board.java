@@ -151,8 +151,8 @@ public class Board extends JPanel implements ActionListener {
 		} catch (IOException e) {
 			// System.out.println("Failed to load ship: " + curr_ship.getFileName());
 			// System.out.println("Message: " + e.getMessage());
-			JOptionPane.showMessageDialog(this, 
-											"Failed to load image: " + e.getMessage() + "\nIf this happened on start-up the program will exit.", 
+			JOptionPane.showMessageDialog(this,
+											"Failed to load image: " + e.getMessage() + "\nIf this happened on start-up the program will exit.",
 											"Failed to load image",
 											JOptionPane.ERROR_MESSAGE);
 			if (curr_ship == null) {
@@ -164,8 +164,8 @@ public class Board extends JPanel implements ActionListener {
 		img = curr_ship.getImage();
 		if (img == null) {
 			System.out.println("Failed to load ship image");
-			JOptionPane.showMessageDialog(this, 
-											"Failed to get image", 
+			JOptionPane.showMessageDialog(this,
+											"Failed to get image",
 											"Failed to get image",
 											JOptionPane.ERROR_MESSAGE);
 
@@ -234,7 +234,10 @@ public class Board extends JPanel implements ActionListener {
 								img.getWidth(null) + SHIP_BOUND_PAD,
 								img.getHeight(null) + SHIP_BOUND_PAD);
 		if (control_panel.isMirrorToggle()) {
-			drawCircle(g, (w * .5 - (draw_x - (w * .5))), draw_y, Color.GREEN);
+			double img_center_x = (img_x + img.getWidth(null) * .5);
+			double img_center_y = (img_y + img.getHeight(null) * .5);
+			drawDashLine(g, new Point((int)img_center_x, 0), new Point((int)img_center_x, (int)h), Color.RED, 1f);
+			drawCircle(g, (img_center_x - (draw_x - img_center_x)), draw_y, Color.GREEN);
 		}
 		drawCircle(g, draw_x, draw_y, Color.RED);
 		if (altPressed) {
@@ -248,7 +251,19 @@ public class Board extends JPanel implements ActionListener {
 		Toolkit.getDefaultToolkit().sync();
 	}
 
+	protected void drawDashLine(Graphics g, Point origin, Point dst, Color col, float line_width) {
+		float dash_center_line[] = {10.0f, 5f, 2f, 5f};
+		BasicStroke dashedStroke = new BasicStroke(line_width,	BasicStroke.CAP_ROUND, 
+																BasicStroke.JOIN_ROUND, 
+																10f, dash_center_line, 0.0f);
+		drawLine(g, origin, dst, col, dashedStroke);
+	}
+
 	protected void drawLine(Graphics g, Point origin, Point dst, Color col, float line_width) {
+		drawLine(g, origin, dst, col, new BasicStroke(line_width));
+	}
+
+	protected void drawLine(Graphics g, Point origin, Point dst, Color col, BasicStroke stoke) {
 		Graphics2D g2d = (Graphics2D) g;
 		if (dst == null)
 			return ;
@@ -257,7 +272,7 @@ public class Board extends JPanel implements ActionListener {
 		g2d.setRenderingHints(rh);
 
 		Line2D line = new Line2D.Double(origin.x, origin.y, dst.x, dst.y);
-		g2d.setStroke(new BasicStroke(line_width));
+		g2d.setStroke(stoke);
 		g2d.setColor(col);
 		g2d.draw(line);
 		should_redraw = true;
@@ -479,7 +494,7 @@ public class Board extends JPanel implements ActionListener {
 		double tolerance = curr_ship.getWidth() * 0.005;
 		return ((x <= 0.51 && x >= -0.51) || (x <= tolerance && x >= -tolerance));
 	}
-	
+
 	public void addHardpoint(Hardpoint.HardpointType type) {
 		double x_fin = toShipCoord().getX();
 		double y_fin = toShipCoord().getY();
