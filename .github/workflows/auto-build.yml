@@ -110,13 +110,13 @@ jobs:
               --tag continuous \
               --name "Continuous Build" \
               --description "$DESCRIPTION" \
-              --prerelease
+              --pre-release
           else
             github-release edit \
               --tag continuous \
               --name "Continuous Build" \
               --description "$DESCRIPTION" \
-              --prerelease
+              --pre-release
           fi
       - name: Download Artifacts
         uses: actions/download-artifact@v4
