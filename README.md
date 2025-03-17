@@ -2,6 +2,10 @@
 
 Coordinate finder and ship builder for Endless Sky. To be the complete ship maker for ES covering all from stats, outfitting, to positioning hardpoints.
 
+## Requirement
+
+Java 21.0.2 (What I used, may or may not work with older version)
+
 ## Compilation
 
 ```bash
@@ -35,8 +39,3 @@ java -jar es_shipyard.jar
 * Middle mouse button to drag
 * Home key to reset zoom and drag.
 * Configure hardpoint values on the left panel.
-
-
-I was planing on something like this for a while. Finding out my favourite ES ship builder was taken down for some reason finally pushed me to do it, wasn't a fan of web stuffs anyway (and that was one of the big reason why). With this application, as long as you have it and a functioning computer you can always use it.
-
-Why Java? I know a bit of it and want to write more, no good reason really. Might rewrite in Rust or whatever fancy new language later if I feel like it.
