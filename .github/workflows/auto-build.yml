@@ -48,7 +48,7 @@ jobs:
         run: |
           javac *.java
           jar -cfe es_shipyard_windows.jar Shipyard *.class
-          pkg es_shipyard.exe 
+          pkg es_shipyard_windows.exe 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
