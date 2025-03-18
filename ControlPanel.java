@@ -58,7 +58,8 @@ public class ControlPanel extends JPanel implements ItemListener{
 	protected JCheckBox snapCenter;
 	protected JCheckBox lockX;
 	protected JCheckBox lockY;
-	protected Vector<JRadioButton> hp_btns = new Vector<JRadioButton>();
+	// protected Vector<JRadioButton> hp_btns = new Vector<JRadioButton>();
+	private JTabbedPane hp_Plane;
 	// protected JRadioButton engineButton;
 	// protected JRadioButton revengineButton;
 	// protected JRadioButton steerengineButton;
@@ -130,7 +131,7 @@ public class ControlPanel extends JPanel implements ItemListener{
 		// }
 		
 		int i = 0;
-		JTabbedPane hp_Plane = new JTabbedPane(JTabbedPane.TOP);
+		hp_Plane = new JTabbedPane(JTabbedPane.TOP);
 		hp_Plane.setBackground(Shipyard.backgroundColor);
 		hp_Plane.setForeground(Shipyard.textColor);
 		for (String hp : Hardpoint.hp_types) {
@@ -175,6 +176,10 @@ public class ControlPanel extends JPanel implements ItemListener{
 			new_img_path = Shipyard.selectImage();
 		}
 		
+	}
+
+	public JTabbedPane getHardpointPanel() {
+		return (hp_Plane);
 	}
 
 	public boolean isMirrorToggle() {

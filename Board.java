@@ -67,7 +67,7 @@ public class Board extends JPanel implements ActionListener {
 	protected final int DELAY = 10;
 	protected final double CIRCLE_DIA = 5.;
 	protected final double LOCK_LINE_SCALE = 1.5;
-	protected final double ANGLE_LINE_SCALE = 2;
+	protected final double ANGLE_LINE_SCALE = 3;
 	protected final int SHIP_BOUND_PAD = 10;
 
 	public Board(String file_to_open, JFrame new_frame) {
@@ -240,9 +240,9 @@ public class Board extends JPanel implements ActionListener {
 			double img_center_y = (img_y + img.getHeight(null) * .5);
 			double mirr_cir_x = (img_center_x - (draw_x - img_center_x));
 			drawDashLine(g, new Point((int)img_center_x, 0), new Point((int)img_center_x, (int)h), Color.RED, 1f);
-			drawIndicatorCircle(g, mirr_cir_x, draw_y, Color.GREEN);
+			drawIndicatorCircle(g, mirr_cir_x, draw_y, Color.GREEN, true);
 		}
-		drawIndicatorCircle(g, draw_x, draw_y, Color.RED);
+		drawIndicatorCircle(g, draw_x, draw_y, Color.RED, false);
 		if (altPressed) {
 			drawLine(g, new Point((int)draw_x, (int)draw_y), getMousePosition(), Color.RED, 1);
 			if (getMousePosition() != null) {
@@ -254,7 +254,15 @@ public class Board extends JPanel implements ActionListener {
 		Toolkit.getDefaultToolkit().sync();
 	}
 
-	protected void drawIndicatorCircle(Graphics g, double x, double y, Color col) {
+	private double toGameAngle(double angle, boolean mirror) {
+		double inv_a = 1;
+		if (mirror) {
+			inv_a = -1;
+		}
+		return (angle * inv_a - 90);
+	}
+
+	protected void drawIndicatorCircle(Graphics g, double x, double y, Color col, boolean mirror) {
 		drawCircle(g, x, y, col);
 		if (control_panel.isLockX()) {
 			Point lockX_l_src = new Point((int)x, (int)(y + CIRCLE_DIA * .5));
@@ -272,12 +280,42 @@ public class Board extends JPanel implements ActionListener {
 			drawLine(g, lock_l_src, lock_l_dst, col,1f );
 			drawLine(g, lock_l_src_a, lock_l_dst_a, col,1f );
 		}
+		// System.out.println("selected hp" + control_panel.getHardpointPanel().getSelectedIndex());
+		int selectedHardpoint = control_panel.getHardpointPanel().getSelectedIndex();
+		Point angle_targ = null;
+		
+		switch(Hardpoint.hp_types.get(selectedHardpoint)) {
+			case "gun":
+				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.getGunData().angle, mirror));
+				break;
+			case "turret":
+				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.getTurretData().angle, mirror));
+				break;
+			case "engine":
+				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.engine_data.angle, mirror));
+				break;
+			case "reverse engine":
+				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.rev_engine_data.angle, mirror));
+				break;
+			case "steering engine":
+				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.ste_engine_data.angle, mirror));
+				break;
+			case "bay":
+				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.bay_data.angle, mirror));
+				break;
+		}
+		if (angle_targ != null) {
+			Point src = new Point((int)x, (int)y);
+			angle_targ.x += src.x;
+			angle_targ.y += src.y;
+			drawLine(g, src, angle_targ, Color.MAGENTA,1f );
+		}
 	}
 
 	protected void drawDashLine(Graphics g, Point origin, Point dst, Color col, float line_width) {
 		float dash_center_line[] = {10.0f, 5f, 2f, 5f};
-		BasicStroke dashedStroke = new BasicStroke(line_width,	BasicStroke.CAP_ROUND, 
-																BasicStroke.JOIN_ROUND, 
+		BasicStroke dashedStroke = new BasicStroke(line_width,	BasicStroke.CAP_ROUND,
+																BasicStroke.JOIN_ROUND,
 																10f, dash_center_line, 0.0f);
 		drawLine(g, origin, dst, col, dashedStroke);
 	}
