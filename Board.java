@@ -65,7 +65,9 @@ public class Board extends JPanel implements ActionListener {
 	protected boolean should_redraw;
 
 	protected final int DELAY = 10;
-	protected final double CIRCLE_DIA = 5;
+	protected final double CIRCLE_DIA = 5.;
+	protected final double LOCK_LINE_SCALE = 1.5;
+	protected final double ANGLE_LINE_SCALE = 2;
 	protected final int SHIP_BOUND_PAD = 10;
 
 	public Board(String file_to_open, JFrame new_frame) {
@@ -236,10 +238,11 @@ public class Board extends JPanel implements ActionListener {
 		if (control_panel.isMirrorToggle()) {
 			double img_center_x = (img_x + img.getWidth(null) * .5);
 			double img_center_y = (img_y + img.getHeight(null) * .5);
+			double mirr_cir_x = (img_center_x - (draw_x - img_center_x));
 			drawDashLine(g, new Point((int)img_center_x, 0), new Point((int)img_center_x, (int)h), Color.RED, 1f);
-			drawCircle(g, (img_center_x - (draw_x - img_center_x)), draw_y, Color.GREEN);
+			drawIndicatorCircle(g, mirr_cir_x, draw_y, Color.GREEN);
 		}
-		drawCircle(g, draw_x, draw_y, Color.RED);
+		drawIndicatorCircle(g, draw_x, draw_y, Color.RED);
 		if (altPressed) {
 			drawLine(g, new Point((int)draw_x, (int)draw_y), getMousePosition(), Color.RED, 1);
 			if (getMousePosition() != null) {
@@ -249,6 +252,26 @@ public class Board extends JPanel implements ActionListener {
 			}
 		}
 		Toolkit.getDefaultToolkit().sync();
+	}
+
+	protected void drawIndicatorCircle(Graphics g, double x, double y, Color col) {
+		drawCircle(g, x, y, col);
+		if (control_panel.isLockX()) {
+			Point lockX_l_src = new Point((int)x, (int)(y + CIRCLE_DIA * .5));
+			Point lockX_l_dst = new Point((int)x, (int)(y + CIRCLE_DIA * LOCK_LINE_SCALE));
+			Point lockX_l_src_n = new Point((int)x, (int)(y - CIRCLE_DIA * .5));
+			Point lockX_l_dst_n = new Point((int)x, (int)(y - CIRCLE_DIA * LOCK_LINE_SCALE));
+			drawLine(g, lockX_l_src, lockX_l_dst, col,1f );
+			drawLine(g, lockX_l_src_n, lockX_l_dst_n, col,1f );
+		}
+		else if (control_panel.isLockY()) {
+			Point lock_l_src = new Point((int)(x + CIRCLE_DIA * .5), (int)y);
+			Point lock_l_dst = new Point((int)(x + CIRCLE_DIA * LOCK_LINE_SCALE), (int)y);
+			Point lock_l_src_a = new Point((int)(x - CIRCLE_DIA * .5), (int)y);
+			Point lock_l_dst_a = new Point((int)(x - CIRCLE_DIA * LOCK_LINE_SCALE), (int)y);
+			drawLine(g, lock_l_src, lock_l_dst, col,1f );
+			drawLine(g, lock_l_src_a, lock_l_dst_a, col,1f );
+		}
 	}
 
 	protected void drawDashLine(Graphics g, Point origin, Point dst, Color col, float line_width) {
