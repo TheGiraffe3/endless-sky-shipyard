@@ -47,7 +47,6 @@ jobs:
       - name: Build Application
         run: |
           javac *.java
-          jar -cfe es_shipyard_windows.jar Shipyard *.class
           pkg es_shipyard_windows.exe 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -56,6 +55,7 @@ jobs:
           path: ${{ env.OUTPUT }}
 
   # build_ubuntu_file:
+  #        jar -cfe es_shipyard_windows.jar Shipyard *.class
   #   name: Linux
   #   runs-on: ubuntu-22.04
   #   env:
