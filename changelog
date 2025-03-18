@@ -1,4 +1,12 @@
 
+Version 0.0.2a (WIP)
+	* Fixed: Mirrored circle being off when the sprite is dragged off-center.
+	* Added: Draw centerline when in mirror mode.
+	* Added: Line indicating locked axis at positioning circle.
+	* Added: Line indicating angle at positioning circle.
+	* Added: Remember directory of the last opened file in the session.
+	* Test using launch4j to build executable for Windows.
+
 Version 0.0.1a : Initial Alpha Release
 	* Initial Alpha Release
 	* Functional(?) hardpoint locator for ES ships.

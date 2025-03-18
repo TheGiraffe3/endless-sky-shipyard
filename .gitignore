@@ -2,4 +2,10 @@
 *.png
 _*
 *.jar
+*.zip
+*.exe
+launch4j.log
+l4j_es_shipyard_config.xml
+es_shipyard_*
+build.bat
 unused/

@@ -65,7 +65,9 @@ public class Board extends JPanel implements ActionListener {
 	protected boolean should_redraw;
 
 	protected final int DELAY = 10;
-	protected final double CIRCLE_DIA = 5;
+	protected final double CIRCLE_DIA = 5.;
+	protected final double LOCK_LINE_SCALE = 1.5;
+	protected final double ANGLE_LINE_SCALE = 3;
 	protected final int SHIP_BOUND_PAD = 10;
 
 	public Board(String file_to_open, JFrame new_frame) {
@@ -151,8 +153,8 @@ public class Board extends JPanel implements ActionListener {
 		} catch (IOException e) {
 			// System.out.println("Failed to load ship: " + curr_ship.getFileName());
 			// System.out.println("Message: " + e.getMessage());
-			JOptionPane.showMessageDialog(this, 
-											"Failed to load image: " + e.getMessage() + "\nIf this happened on start-up the program will exit.", 
+			JOptionPane.showMessageDialog(this,
+											"Failed to load image: " + e.getMessage() + "\nIf this happened on start-up the program will exit.",
 											"Failed to load image",
 											JOptionPane.ERROR_MESSAGE);
 			if (curr_ship == null) {
@@ -164,8 +166,8 @@ public class Board extends JPanel implements ActionListener {
 		img = curr_ship.getImage();
 		if (img == null) {
 			System.out.println("Failed to load ship image");
-			JOptionPane.showMessageDialog(this, 
-											"Failed to get image", 
+			JOptionPane.showMessageDialog(this,
+											"Failed to get image",
 											"Failed to get image",
 											JOptionPane.ERROR_MESSAGE);
 
@@ -234,9 +236,13 @@ public class Board extends JPanel implements ActionListener {
 								img.getWidth(null) + SHIP_BOUND_PAD,
 								img.getHeight(null) + SHIP_BOUND_PAD);
 		if (control_panel.isMirrorToggle()) {
-			drawCircle(g, (w * .5 - (draw_x - (w * .5))), draw_y, Color.GREEN);
+			double img_center_x = (img_x + img.getWidth(null) * .5);
+			double img_center_y = (img_y + img.getHeight(null) * .5);
+			double mirr_cir_x = (img_center_x - (draw_x - img_center_x));
+			drawDashLine(g, new Point((int)img_center_x, 0), new Point((int)img_center_x, (int)h), Color.RED, 1f);
+			drawIndicatorCircle(g, mirr_cir_x, draw_y, Color.GREEN, true);
 		}
-		drawCircle(g, draw_x, draw_y, Color.RED);
+		drawIndicatorCircle(g, draw_x, draw_y, Color.RED, false);
 		if (altPressed) {
 			drawLine(g, new Point((int)draw_x, (int)draw_y), getMousePosition(), Color.RED, 1);
 			if (getMousePosition() != null) {
@@ -248,7 +254,77 @@ public class Board extends JPanel implements ActionListener {
 		Toolkit.getDefaultToolkit().sync();
 	}
 
+	private double toGameAngle(double angle, boolean mirror) {
+		double inv_a = 1;
+		if (mirror) {
+			inv_a = -1;
+		}
+		return (angle * inv_a - 90);
+	}
+
+	protected void drawIndicatorCircle(Graphics g, double x, double y, Color col, boolean mirror) {
+		drawCircle(g, x, y, col);
+		if (control_panel.isLockX()) {
+			Point lockX_l_src = new Point((int)x, (int)(y + CIRCLE_DIA * .5));
+			Point lockX_l_dst = new Point((int)x, (int)(y + CIRCLE_DIA * LOCK_LINE_SCALE));
+			Point lockX_l_src_n = new Point((int)x, (int)(y - CIRCLE_DIA * .5));
+			Point lockX_l_dst_n = new Point((int)x, (int)(y - CIRCLE_DIA * LOCK_LINE_SCALE));
+			drawLine(g, lockX_l_src, lockX_l_dst, col,1f );
+			drawLine(g, lockX_l_src_n, lockX_l_dst_n, col,1f );
+		}
+		else if (control_panel.isLockY()) {
+			Point lock_l_src = new Point((int)(x + CIRCLE_DIA * .5), (int)y);
+			Point lock_l_dst = new Point((int)(x + CIRCLE_DIA * LOCK_LINE_SCALE), (int)y);
+			Point lock_l_src_a = new Point((int)(x - CIRCLE_DIA * .5), (int)y);
+			Point lock_l_dst_a = new Point((int)(x - CIRCLE_DIA * LOCK_LINE_SCALE), (int)y);
+			drawLine(g, lock_l_src, lock_l_dst, col,1f );
+			drawLine(g, lock_l_src_a, lock_l_dst_a, col,1f );
+		}
+		// System.out.println("selected hp" + control_panel.getHardpointPanel().getSelectedIndex());
+		int selectedHardpoint = control_panel.getHardpointPanel().getSelectedIndex();
+		Point angle_targ = null;
+		
+		switch(Hardpoint.hp_types.get(selectedHardpoint)) {
+			case "gun":
+				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.getGunData().angle, mirror));
+				break;
+			case "turret":
+				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.getTurretData().angle, mirror));
+				break;
+			case "engine":
+				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.engine_data.angle, mirror));
+				break;
+			case "reverse engine":
+				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.rev_engine_data.angle, mirror));
+				break;
+			case "steering engine":
+				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.ste_engine_data.angle, mirror));
+				break;
+			case "bay":
+				angle_targ = polarToCartesian(CIRCLE_DIA * ANGLE_LINE_SCALE, toGameAngle(control_panel.bay_data.angle, mirror));
+				break;
+		}
+		if (angle_targ != null) {
+			Point src = new Point((int)x, (int)y);
+			angle_targ.x += src.x;
+			angle_targ.y += src.y;
+			drawLine(g, src, angle_targ, Color.MAGENTA,1f );
+		}
+	}
+
+	protected void drawDashLine(Graphics g, Point origin, Point dst, Color col, float line_width) {
+		float dash_center_line[] = {10.0f, 5f, 2f, 5f};
+		BasicStroke dashedStroke = new BasicStroke(line_width,	BasicStroke.CAP_ROUND,
+																BasicStroke.JOIN_ROUND,
+																10f, dash_center_line, 0.0f);
+		drawLine(g, origin, dst, col, dashedStroke);
+	}
+
 	protected void drawLine(Graphics g, Point origin, Point dst, Color col, float line_width) {
+		drawLine(g, origin, dst, col, new BasicStroke(line_width));
+	}
+
+	protected void drawLine(Graphics g, Point origin, Point dst, Color col, BasicStroke stoke) {
 		Graphics2D g2d = (Graphics2D) g;
 		if (dst == null)
 			return ;
@@ -257,7 +333,7 @@ public class Board extends JPanel implements ActionListener {
 		g2d.setRenderingHints(rh);
 
 		Line2D line = new Line2D.Double(origin.x, origin.y, dst.x, dst.y);
-		g2d.setStroke(new BasicStroke(line_width));
+		g2d.setStroke(stoke);
 		g2d.setColor(col);
 		g2d.draw(line);
 		should_redraw = true;
@@ -479,7 +555,7 @@ public class Board extends JPanel implements ActionListener {
 		double tolerance = curr_ship.getWidth() * 0.005;
 		return ((x <= 0.51 && x >= -0.51) || (x <= tolerance && x >= -tolerance));
 	}
-	
+
 	public void addHardpoint(Hardpoint.HardpointType type) {
 		double x_fin = toShipCoord().getX();
 		double y_fin = toShipCoord().getY();
