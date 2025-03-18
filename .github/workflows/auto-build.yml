@@ -30,7 +30,8 @@ jobs:
           name: ${{ env.OUTPUT }}
           path: ${{ env.OUTPUT }}
 
-  # Application-specific files
+  # Application-specific files.
+  # Windows executable
   build_exe_file:
     name: Build Executable
     runs-on: windows-2025
@@ -46,8 +47,8 @@ jobs:
           npm install -g pkg
       - name: Build Application
         run: |
-          javac *.java
-          pkg es_shipyard_windows.exe 
+          javac -d . *.java
+          jar -cfe es_shipyard_windows.jar Shipyard *.class
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -55,7 +56,6 @@ jobs:
           path: ${{ env.OUTPUT }}
 
   # build_ubuntu_file:
-  #        jar -cfe es_shipyard_windows.jar Shipyard *.class
   #   name: Linux
   #   runs-on: ubuntu-22.04
   #   env:
