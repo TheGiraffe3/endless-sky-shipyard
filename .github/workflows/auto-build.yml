@@ -12,7 +12,7 @@ jobs:
   # .jar file
   build_jar_file:
     name: Build Jar File
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     env:
       OUTPUT: es_shipyard.jar
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -41,17 +41,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           show-progress: true
+      - name: Install Dependencies
+        run: |
+          npm install -g pkg
       - name: Build Application
         run: |
           javac *.java
           jar -cfe es_shipyard_windows.jar Shipyard *.class
+          pkg es_shipyard.exe 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.OUTPUT }}
           path: ${{ env.OUTPUT }}
 
-  # cd_appimage_x64:
+  # build_ubuntu_file:
   #   name: Linux
   #   runs-on: ubuntu-22.04
   #   env:
@@ -71,7 +75,7 @@ jobs:
   #         name: ${{ env.OUTPUT }}
   #         path: ${{ env.OUTPUT }}
 
-  # cd_macos_x64:
+  # build_application:
   #   name: MacOS
   #   runs-on: macos-13
   #   env:
