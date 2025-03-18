@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
@@ -112,8 +113,16 @@ public class Shipyard extends JFrame{
 		});
 	}
 
+	public static String last_selected_dir = null;
+
 	public static String selectImage() {
-		JFileChooser fc = new JFileChooser(System.getProperty("user.dir"));
+		JFileChooser fc;
+		if (last_selected_dir == null) {
+			fc = new JFileChooser(System.getProperty("user.dir"));
+		}
+		else {
+			fc = new JFileChooser(last_selected_dir);
+		}
 		fc.setBackground(Shipyard.backgroundColor);
 		fc.setForeground(Shipyard.textColor);
 		fc.setFileFilter(new FileFilter() {
@@ -132,6 +141,13 @@ public class Shipyard extends JFrame{
 		int returnVal = fc.showOpenDialog(null);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
+			try {
+				last_selected_dir = file.getCanonicalPath();
+			} catch (IOException e) {
+
+			} catch (SecurityException e) {
+
+			}
 			// System.out.println("Opened file:" + file.getName());
 			return file.getAbsolutePath();
 			// file.getName();
